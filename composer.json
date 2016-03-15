@@ -1,0 +1,22 @@
+{
+	"name":	"crazedsanity/messaging",
+	"license": "MIT",
+	"description": "Framework for storing messages in the session (alerts, notifications, etc)",
+	"keywords": [ "php", "framework", "application" ],
+	"authors": [
+		{
+			"name":	"Dan Falconer",
+			"email": "github@crazedsanity.com",
+			"homepage": "http://www.crazedsanity.com",
+			"role": "Developer"
+		}
+	],
+	"autoload": {
+		"classmap": ["src/"]
+	},
+    "require": {
+		"php":	">=5.3.0",
+		"crazedsanity/core": "~0.2"
+    },
+	"minimum-stability": "dev"
+}
