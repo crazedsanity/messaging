@@ -5,6 +5,11 @@ use crazedsanity\messaging\MessageQueue;
 use crazedsanity\core\ToolBox;
 
 class TestOfMessageAndMessageQueue extends PHPUnit_Framework_TestCase {
+	
+	
+	public function setUp() {
+		$_SESSION = array();
+	}
     
     public function test_create() {
         $que = new MessageQueue();
@@ -51,5 +56,30 @@ class TestOfMessageAndMessageQueue extends PHPUnit_Framework_TestCase {
 			$this->assertEquals($expectedNum, count($_SESSION[MessageQueue::SESSIONKEY][$type]), "too many messages of type '". $type ."'");
 		}
 		$this->assertEquals($theMessage, $_SESSION[MessageQueue::SESSIONKEY][$theMessage->type][0], "Saved message was mangled...");
+	}
+	
+	
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage invalid title
+	 */
+	public function test_invalidTitle() {
+		new Message('', '');
+	}
+	
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage invalid message
+	 */
+	public function test_invalidMessage() {
+		new Message('the title', '');
+	}
+	
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @expectedExceptionMessage invalid type
+	 */
+	public function test_invalidType() {
+		new Message('the title', 'here is a message', 'invalid');
 	}
 }
