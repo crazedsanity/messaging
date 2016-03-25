@@ -11,8 +11,9 @@ class Message {
     const TYPE_ERROR  = "error";
     const TYPE_FATAL  = "fatal";
 	
-	const DEFAULT_TYPE = self::TYPE_NOTICE;
+	CONST SESSIONKEY = '/message';
     
+	const DEFAULT_TYPE = self::TYPE_NOTICE;
     
     // this is a sort of hack to make it easier to know the list of valid types.
     public static $validTypes = array(
@@ -21,10 +22,18 @@ class Message {
         self::TYPE_ERROR,
         self::TYPE_FATAL
     );
+	
+	// set in order of importance (most -> least)
+	public static $typePrecedence = array(
+		self::TYPE_FATAL,
+		self::TYPE_ERROR,
+		self::TYPE_STATUS,
+		self::TYPE_NOTICE,
+	);
     
     
     private $title;
-    private $message;
+    private $body;
 	private $type;
     private $url;
     private $linkText;
@@ -49,7 +58,7 @@ class Message {
         }
         
         if(!is_null($message) && strlen($message) > 5) {
-            $this->message = $message;
+            $this->body = $message;
         }
         else {
             throw new InvalidArgumentException("invalid message length");
@@ -66,6 +75,7 @@ class Message {
             $this->url = $linkUrl;
             $this->linkText = $linkText;
         }
+		$this->save();
     }
 	//----------------------------------------------------------------------------
 
@@ -74,20 +84,77 @@ class Message {
 	//----------------------------------------------------------------------------
     public function getContents() {
         $retval = array(
-            'title'     => $this->title,
-            'message'   => $this->message,
-            'url'       => $this->url,
-            'linkText'  => $this->linkText,
+            'title'		=> $this->title,
+            'body'		=> $this->body,
+            'url'		=> $this->url,
+			'type'		=> $this->type,
+            'linkText'	=> $this->linkText,
         );
         return $retval;
     }
+	//----------------------------------------------------------------------------
+	
+	
+	
+	//----------------------------------------------------------------------------
+	public function setContents(array $msg) {
+		foreach($msg as $field => $value) {
+			$this->$field = $value;
+		}
+		$this->save();
+	}
 	//----------------------------------------------------------------------------
 
 
 
 	//----------------------------------------------------------------------------
     public function __get($name) {
-        return $this->$name;
+		if($name == 'contents') {
+			$retval = $this->getContents();
+		}
+		else {
+			$retval = $this->$name;
+		}
+        return $retval;
     }
+	//----------------------------------------------------------------------------
+	
+	
+	
+	//----------------------------------------------------------------------------
+	/**
+	 * Set an internal variable.
+	 * 
+	 * @param type $name
+	 * @param type $val
+	 * @throws InvalidArgumentException
+	 */
+	public function __set($name, $val=null) {
+		switch($name) {
+			case 'title':
+				$this->title = $val;
+				break;
+			case 'body':
+				$this->body = $val;
+				break;
+			case 'url':
+				$this->url = $val;
+				break;
+			case 'linkText':
+				$this->linkText = $val;
+				break;
+			default:
+				throw new InvalidArgumentException;
+		}
+		$this->save();
+	}
+	//----------------------------------------------------------------------------
+	
+	
+	
+	//----------------------------------------------------------------------------
+	public function save() {
+		$_SESSION[self::SESSIONKEY] = $this->getContents();
+	}
 	//----------------------------------------------------------------------------
 }
