@@ -40,43 +40,9 @@ class Message {
 
 
 	//----------------------------------------------------------------------------
-	/**
-	 * 
-	 * @param type $title
-	 * @param type $message
-	 * @param type $type
-	 * @param type $linkUrl
-	 * @param type $linkText
-	 * @throws InvalidArgumentException
-	 */
-    public function __construct($title, $message, $type=self::DEFAULT_TYPE, $linkUrl=null, $linkText=null) {
-        if(!is_null($title) && strlen($title) >2) {
-            $this->title = $title;
-        }
-        else {
-            throw new InvalidArgumentException("invalid title");
-        }
-        
-        if(!is_null($message) && strlen($message) > 5) {
-            $this->body = $message;
-        }
-        else {
-            throw new InvalidArgumentException("invalid message length");
-        }
-        
-        if(!is_null($type) && in_array($type, self::$validTypes)) {
-            $this->type = $type;
-        }
-        else {
-            throw new InvalidArgumentException("invalid type");
-        }
-        
-        if(!is_null($linkUrl) && strlen($linkUrl) > 0 && !is_null($linkText) && strlen($linkText) > 0) {
-            $this->url = $linkUrl;
-            $this->linkText = $linkText;
-        }
-		$this->save();
-    }
+    public function __construct() {
+		$this->type = self::DEFAULT_TYPE;
+	}
 	//----------------------------------------------------------------------------
 
 
@@ -123,30 +89,53 @@ class Message {
 	
 	//----------------------------------------------------------------------------
 	/**
-	 * Set an internal variable.
+	 * Set an internal variable, and data is saved (if it is valid)
 	 * 
 	 * @param type $name
 	 * @param type $val
-	 * @throws InvalidArgumentException
 	 */
 	public function __set($name, $val=null) {
-		switch($name) {
+		if($this->validate($name, $val)) {
+			$this->$name = $val;
+		}
+		try {
+			$this->save();
+		}
+		catch(InvalidArgumentException $e) {
+			//
+		}
+	}
+	//----------------------------------------------------------------------------
+	
+	
+	
+	//----------------------------------------------------------------------------
+	public function validate($field, $val) {
+		switch($field) {
 			case 'title':
-				$this->title = $val;
+				if(strlen($val) <= 2) {
+					throw new InvalidArgumentException("invalid title");
+				}
 				break;
 			case 'body':
-				$this->body = $val;
+				if(is_null($val) || strlen($val) <= 5) {
+					throw new InvalidArgumentException("invalid ". $field);
+				}
+				break;
+			case 'type':
+				if(is_null($val) || !in_array($val, self::$validTypes)) {
+					throw new InvalidArgumentException("invalid type ($val)");
+				}
 				break;
 			case 'url':
-				$this->url = $val;
-				break;
 			case 'linkText':
-				$this->linkText = $val;
 				break;
 			default:
-				throw new InvalidArgumentException;
+				throw new InvalidArgumentException("invalid field");
 		}
-		$this->save();
+		
+		// got this far without an exception? good to go.
+		return true;
 	}
 	//----------------------------------------------------------------------------
 	
@@ -154,6 +143,10 @@ class Message {
 	
 	//----------------------------------------------------------------------------
 	public function save() {
+		$fields = array('title', 'body', 'type', 'url', 'linkText');
+		foreach($fields as $k) {
+			$this->validate($k, $this->$k);
+		}
 		$_SESSION[self::SESSIONKEY] = $this->getContents();
 	}
 	//----------------------------------------------------------------------------
