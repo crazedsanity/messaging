@@ -17,7 +17,7 @@ class TestOfMessage extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(is_array($_SESSION), "Session isn't an array...?");
 		$this->assertEquals(0, count($_SESSION), "Session is already populated...?");
 		
-		$theMessage = new Message();
+		$theMessage = new Message(true);
 		$theMessage->setContents(array('title'=>'title', 'body'=>'the message'));
 		
 		$this->assertTrue(is_array($_SESSION), "Session was mangled after saving");

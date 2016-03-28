@@ -180,4 +180,19 @@ class TestOfMessageQueue extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(0, $q->getCount(Message::TYPE_ERROR));
 		$this->assertEquals(0, $q->getCount(Message::TYPE_STATUS));
 	}
+	
+	
+	public function test_clear() {
+		$q = new MessageQueue();
+		$this->assertEquals(0, $q->getCount());
+		
+		$test = new Message();
+		$test->title = __METHOD__;
+		$test->body = "another message here";
+		
+		$q->add($test);
+		$this->assertEquals(1, $q->getCount());
+		$q->clear();
+		$this->assertEquals(0, $q->getCount());
+	}
 }

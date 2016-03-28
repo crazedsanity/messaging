@@ -41,7 +41,7 @@ class Message {
 
 
 	//----------------------------------------------------------------------------
-    public function __construct($autoSave=true) {
+    public function __construct($autoSave=false) {
 		$this->type = self::DEFAULT_TYPE;
 		if(is_bool($autoSave)) {
 			$this->autoSave = $autoSave;
