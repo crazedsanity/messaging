@@ -103,4 +103,18 @@ class MessageQueue extends Message {
 		return $retval;
 	}
 	//----------------------------------------------------------------------------
+	
+	
+	
+	//----------------------------------------------------------------------------
+	public function getAll() {
+		$theList = array();
+		foreach(Message::$typePrecedence as $type) {
+			foreach($this->_messages[$type] as $msg) {
+				$theList[] = $msg->getContents();
+			}
+		}
+		return $theList;
+	}
+	//----------------------------------------------------------------------------
 }

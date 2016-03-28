@@ -63,4 +63,57 @@ class TestOfMessageQueue extends PHPUnit_Framework_TestCase {
 		$x = new MessageQueue();
 		$x->getCount('invalid');
 	}
+	
+	
+	public function test_getAll() {
+		
+		$_SESSION = array(
+			'message'	=> array(
+				Message::TYPE_NOTICE => array(
+					0	=> array(
+						'title'	=> 'test',
+						'body'	=> 'The message body',
+					),
+					1	=> array(
+						'title'		=> 'another',
+						'body'		=> "a test body",
+						'url'		=> 'http://localhost/?x=y',
+						'linkText'	=> 'go to localhost'
+					)
+				),
+				Message::TYPE_FATAL	=> array(
+					0	=> array(
+						'title'	=> "Fatal error",
+						'body'	=> "there was a fatal error... somewhere",
+					)
+				)
+			)
+		);
+		$x = new MessageQueue(true);
+		
+		$matchThis = array(
+			0	=> array(
+				'title'		=> "Fatal error",
+				'body'		=> "there was a fatal error... somewhere",
+				'url'		=> null,
+				'linkText'	=> null,
+				'type'		=> Message::TYPE_FATAL,
+			),
+			1	=> array(
+				'title'		=> 'test',
+				'body'		=> 'The message body',
+				'url'		=> null,
+				'linkText'	=> null,
+				'type'		=> Message::DEFAULT_TYPE,
+			),
+			2	=> array(
+				'title'		=> 'another',
+				'body'		=> "a test body",
+				'url'		=> 'http://localhost/?x=y',
+				'linkText'	=> 'go to localhost',
+				'type'		=> Message::DEFAULT_TYPE,
+			),
+		);
+		$this->assertEquals($matchThis, $x->getAll());
+	}
 }
