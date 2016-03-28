@@ -114,7 +114,10 @@ class TestOfMessageQueue extends PHPUnit_Framework_TestCase {
 				'type'		=> Message::DEFAULT_TYPE,
 			),
 		);
+		
+		$this->assertEquals(count($matchThis), $x->getCount());
 		$this->assertEquals($matchThis, $x->getAll());
+		$this->assertEquals(0, $x->getCount()); // ensure the queue gets cleared
 	}
 	
 	

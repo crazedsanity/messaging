@@ -116,8 +116,9 @@ class MessageQueue extends Message {
 	public function getAll() {
 		$theList = array();
 		foreach(Message::$typePrecedence as $type) {
-			foreach($this->_messages[$type] as $msg) {
+			foreach($this->_messages[$type] as $k => $msg) {
 				$theList[] = $msg->getContents();
+				unset($this->_messages[$type][$k]);
 			}
 		}
 		return $theList;
