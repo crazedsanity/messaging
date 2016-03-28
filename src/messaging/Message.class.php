@@ -37,11 +37,15 @@ class Message {
 	private $type;
     private $url;
     private $linkText;
+	private $autoSave;
 
 
 	//----------------------------------------------------------------------------
-    public function __construct() {
+    public function __construct($autoSave=true) {
 		$this->type = self::DEFAULT_TYPE;
+		if(is_bool($autoSave)) {
+			$this->autoSave = $autoSave;
+		}
 	}
 	//----------------------------------------------------------------------------
 
@@ -143,11 +147,13 @@ class Message {
 	
 	//----------------------------------------------------------------------------
 	public function save() {
-		$fields = array('title', 'body', 'type', 'url', 'linkText');
-		foreach($fields as $k) {
-			$this->validate($k, $this->$k);
+		if($this->autoSave) {
+			$fields = array('title', 'body', 'type', 'url', 'linkText');
+			foreach($fields as $k) {
+				$this->validate($k, $this->$k);
+			}
+			$_SESSION[self::SESSIONKEY] = $this->getContents();
 		}
-		$_SESSION[self::SESSIONKEY] = $this->getContents();
 	}
 	//----------------------------------------------------------------------------
 }

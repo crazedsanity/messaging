@@ -8,7 +8,7 @@ use crazedsanity\core\ToolBox;
 class MessageQueue extends Message {
     
     private $_messages = array();
-    
+    const SESSIONKEY = "messages";
     
 	//----------------------------------------------------------------------------
     public function __construct($load=false) {
@@ -49,7 +49,7 @@ class MessageQueue extends Message {
         if(isset($_SESSION[self::SESSIONKEY]) && is_array($_SESSION[self::SESSIONKEY])) {
             foreach($_SESSION[self::SESSIONKEY] as $type=>$list) {
                 foreach($list as $num=>$msgData) {
-					$x = new Message();
+					$x = new Message(false);
 					$x->type = $type;
 					$x->setContents($msgData);
 					$this->add($x);
@@ -64,7 +64,12 @@ class MessageQueue extends Message {
     
 	//----------------------------------------------------------------------------
     public function save() {
-        $_SESSION[self::SESSIONKEY] = $this->_messages;
+//        $_SESSION[self::SESSIONKEY] = $this->_messages;
+		foreach($this->_messages as $type=>$list) {
+			foreach($list as $k=>$obj) {
+				$_SESSION[self::SESSIONKEY][$type][$k] = $obj->getContents();
+			}
+		}
     }
 	//----------------------------------------------------------------------------
     
@@ -81,6 +86,7 @@ class MessageQueue extends Message {
 	//----------------------------------------------------------------------------
 	public function add(Message $msg) {
 	    $this->_messages[$msg->type][] = $msg;
+		$this->save();
 	}
 	//----------------------------------------------------------------------------
 	

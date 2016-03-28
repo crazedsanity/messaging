@@ -33,6 +33,16 @@ class TestOfMessage extends PHPUnit_Framework_TestCase {
 	}
 	
 	
+	public function test_noAutoSave() {
+		$this->assertEquals(array(), $_SESSION);
+		$x = new Message(false);
+		$x->setContents(array('title'	=> __METHOD__, 'body'=>"this is a message"));
+		$this->assertEquals(array(), $_SESSION);
+		$x->type = Message::DEFAULT_TYPE;
+		$this->assertEquals(array(), $_SESSION);
+	}
+	
+	
 	/**
 	 * @expectedException InvalidArgumentException
 	 * @expectedExceptionMessage invalid title
