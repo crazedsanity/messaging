@@ -67,7 +67,13 @@ class MessageQueue extends Message {
 //        $_SESSION[self::SESSIONKEY] = $this->_messages;
 		foreach($this->_messages as $type=>$list) {
 			foreach($list as $k=>$obj) {
-				$_SESSION[self::SESSIONKEY][$type][$k] = $obj->getContents();
+//				$_SESSION[self::SESSIONKEY][$type][$k] = $obj->getContents();
+				if(is_object($obj)) {
+					$_SESSION[self::SESSIONKEY][$type][$k] = $obj->getContents();
+				}
+				else {
+					$_SESSION[self::SESSIONKEY][$type][$k] = array();
+				}
 			}
 		}
     }
@@ -131,8 +137,8 @@ class MessageQueue extends Message {
 	public function clear() {
 		foreach(Message::$typePrecedence as $type) {
 			$this->_messages[$type] = array();
+			$_SESSION[MessageQueue::SESSIONKEY][$type] = array();
 		}
-		$this->save();
 	}
 	//----------------------------------------------------------------------------
 }

@@ -194,5 +194,8 @@ class TestOfMessageQueue extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(1, $q->getCount());
 		$q->clear();
 		$this->assertEquals(0, $q->getCount());
+		
+		$n = new MessageQueue(true);
+		$this->assertEquals(0, $n->getCount(), "the cleared queue did not actually save ...");
 	}
 }
