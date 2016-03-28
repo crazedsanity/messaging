@@ -11,7 +11,7 @@ class Message {
     const TYPE_ERROR  = "error";
     const TYPE_FATAL  = "fatal";
 	
-	CONST SESSIONKEY = '/message';
+	CONST SESSIONKEY = 'message';
     
 	const DEFAULT_TYPE = self::TYPE_NOTICE;
     
