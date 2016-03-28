@@ -118,7 +118,7 @@ class Message {
 				}
 				break;
 			case 'body':
-				if(is_null($val) || strlen($val) <= 5) {
+				if(is_null($val) || strlen($val) <= 2) {
 					throw new InvalidArgumentException("invalid ". $field);
 				}
 				break;
